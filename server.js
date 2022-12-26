@@ -32,7 +32,7 @@ mongoose
   });
 
 
-require('../farmerBackend/routes/auth.routes')(app);
+require('./routes/auth.routes')(app);
 
 
 app.get("/",(req,res)=>{
