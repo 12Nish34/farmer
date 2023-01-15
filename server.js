@@ -10,7 +10,7 @@ const { DB } = require("./config/db.config");
 const app = express();
 
 const corsoption = {
-    origin: "exp://192.168.0.110:19000",
+    origin: "http://192.168.0.110:19000",
 }
 
 app.use(cors(corsoption))
