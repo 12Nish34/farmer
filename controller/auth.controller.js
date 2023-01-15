@@ -71,7 +71,9 @@ exports.signup = async (req,res,next)=>{
     const errors = validationResult(req)
 
     if(!errors.isEmpty()){
-        return next(new AppError(errors.array()[0].msg,10))
+        return res.status(500).send({
+            message: errors,
+        })
     }
     const user = await User.findOne({
         email: req.body.email,
