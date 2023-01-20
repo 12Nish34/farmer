@@ -34,6 +34,8 @@ exports.login = async (req,res,next)=>{
         email: req.body.email,
     });
     if(!user){
+        console.log("No such users here"
+        )
         return res.status(400).json({
             message:"No such users exists"
         })
