@@ -30,12 +30,13 @@ const createProfile = async (id,email,name)=>{
 
 //Method for login
 exports.login = async (req,res,next)=>{
+    console.log(req.body.email)
+    console.log(req.body.password)
     const user = await  User.findOne({
         email: req.body.email,
     });
     if(!user){
-        console.log("No such users here"
-        )
+        console.log("No such users here")
         return res.status(400).json({
             message:"No such users exists"
         })
