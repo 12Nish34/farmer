@@ -10,7 +10,7 @@ const { DB } = require("./config/db.config");
 const app = express();
 
 const corsoption = {
-    origin: "http://192.168.0.110:19000",
+    origin: "http:localhost:8080",
 }
 
 app.use(cors(corsoption))
@@ -19,9 +19,9 @@ app.use(urlencoded({extended:true}))
 
 
 mongoose
-  .connect(`mongodb+srv://farmerApp:0lxK9CUpqN2iiNDz@cluster0.x6r2lng.mongodb.net/?retryWrites=true&w=majority`, {
+  .connect(`mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.5.3/farmer`, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
@@ -33,6 +33,7 @@ mongoose
 
 
 require('./routes/auth.routes')(app);
+require('./routes/categorie/cat.routes')(app);
 
 
 app.get("/",(req,res)=>{

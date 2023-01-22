@@ -23,12 +23,12 @@ var userSchema = new mongoose.Schema({
 })
 
 //pre hook to hash the password before updating the db
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
+// userSchema.pre('save', async function (next) {
+//     if (!this.isModified('password')) return next();
   
-    this.password = await bcrypt.hash(this.password, 12);
-    next();
-});
+//     this.password = await bcrypt.hash(this.password, 12);
+//     next();
+// });
 
 //export of User model
 const User = mongoose.model('User',userSchema)
