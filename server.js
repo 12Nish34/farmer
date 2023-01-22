@@ -19,7 +19,7 @@ app.use(urlencoded({extended:true}))
 
 
 mongoose
-  .connect(`mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.5.3/farmer`, {
+  .connect(`mongodb://u4zumvyczwesdqbltwpf:pBfUbow771LUikJWIFfF@n1-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017,n2-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017/brnycibq9z8zjnp?replicaSet=rs0`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
