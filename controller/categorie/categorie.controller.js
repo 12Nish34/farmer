@@ -62,6 +62,10 @@ exports.show = async(req,res,next)=>{
     })
 }
 
+function getRandomArbitrary(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
 exports.showGraph = async(req,res,next)=>{
     const user_id = req.userId
     console.log("User id from get request",user_id);
@@ -95,12 +99,25 @@ exports.showGraph = async(req,res,next)=>{
           }
         }, {
           '$project': {
-            '_id': 0
+            '_id': 0,
           }
         }
       ];
     const cursor = await Categorie.aggregate(agg);
+    var data = [];
+    var color = ["#233d29","#050a06","#ffbb8d","#00a4ff"]
+    console.log(color[0])
+    for(var i = 0;i<cursor.length;i++){
+        data.push({
+            name:cursor[i].category,
+            sub:cursor[i].count,
+            color:color[getRandomArbitrary(1,4)],
+            legendFontColor: "#7F7F7F",
+            legendFontSize: 15
+        })
+    }
+    console.log(data)
     return res.status(200).json({
-        cursor
+        data
     })      
 }
