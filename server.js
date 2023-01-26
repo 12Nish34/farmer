@@ -17,9 +17,11 @@ app.use(cors(corsoption))
 app.use(express.json())
 app.use(urlencoded({extended:true}))
 
+const mongodb_local = 'mongodb://127.0.0.1:27017/farmer'
+const mongodb_deployed = 'mongodb+srv://user123:FmbpALd2NTtOeJZF@cluster0.uw3dh6h.mongodb.net/?retryWrites=true&w=majority'
 
 mongoose
-  .connect(`mongodb://u4zumvyczwesdqbltwpf:pBfUbow771LUikJWIFfF@n1-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017,n2-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017/brnycibq9z8zjnp?replicaSet=rs0`, {
+  .connect(mongodb_deployed, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -34,6 +36,8 @@ mongoose
 
 require('./routes/auth.routes')(app);
 require('./routes/categorie/cat.routes')(app);
+require('./routes/categorie/sub.routes')(app);
+require('./routes/categorie/expense.routes')(app);
 
 
 app.get("/",(req,res)=>{

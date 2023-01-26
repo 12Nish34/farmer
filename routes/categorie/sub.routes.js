@@ -1,6 +1,6 @@
-const express = require('express')
+const express = require('express');
 
-const {create,show, showGraph} = require("../../controller/categorie/categorie.controller");
+const {create,show} = require('../../controller/categorie/sub.controller');
 const authJwt = require('../../middleware/authJwt');
 
 module.exports = function(app){
@@ -13,9 +13,8 @@ module.exports = function(app){
         next();
       });
 
-    router.post("/",[authJwt.verifyToken],create);
-    router.get("/",[authJwt.verifyToken],show);
-    router.get("/graph",[authJwt.verifyToken],showGraph)
-
-    app.use('/api/categorie', router)
+    router.post('/',[authJwt.verifyToken],create)
+    router.get('/',[authJwt.verifyToken],show)
+    
+    app.use('/api/sub',router)
 }

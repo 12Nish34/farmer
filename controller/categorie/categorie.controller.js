@@ -20,7 +20,6 @@ exports.create=async(req,res,next)=>{
         })
     }
     const user_id = req.userId;
-    console.log("User id from post request",user_id);
     const user = await User.findOne().where("_id").equals(user_id)
     console.log(user)
     if(!user){
@@ -28,13 +27,16 @@ exports.create=async(req,res,next)=>{
             message:"No such user",
         })
     }
+    console.log()
     await Categorie.create({
         name:req.body.name,
         user_id:user._id,
     })
     const categorie = await Categorie.find({user_id:user._id})
+    console.log(categorie)
     return res.status(200).json({
         message:"Created",
+        category:categorie,
     })
 }
 
@@ -42,9 +44,63 @@ exports.show = async(req,res,next)=>{
     const user_id = req.userId
     console.log("User id from get request",user_id);
     const user = await User.findOne().where("_id").equals(user_id)
-    const categorie = await Categorie.find({user_id:user._id})
-    console.log(categorie)
+    console.log(user)
+    const category = await Categorie.find({}).where('user_id').equals(user._id)
+    const agg = [
+        {
+          '$lookup': {
+            'from': 'subs', 
+            'localField': '_id', 
+            'foreignField': 'cat_id', 
+            'as': 'result'
+          }
+        }
+      ];
+    const cursor =await Categorie.aggregate(agg);
     return res.status(200).json({
-        categorie
+        result:cursor
     })
+}
+
+exports.showGraph = async(req,res,next)=>{
+    const user_id = req.userId
+    console.log("User id from get request",user_id);
+    const user = await User.findOne().where("_id").equals(user_id)
+    console.log(user)
+    const agg = [
+        {
+          '$match': {
+            'user_id': user._id
+          }
+        }, {
+          '$lookup': {
+            'from': 'subs', 
+            'localField': '_id', 
+            'foreignField': 'cat_id', 
+            'as': 'result'
+          }
+        }, {
+          '$unwind': {
+            'path': '$result'
+          }
+        }, {
+          '$group': {
+            '_id': '$result.cat_id', 
+            'category': {
+              '$first': '$name'
+            }, 
+            'count': {
+              '$sum': 1
+            }
+          }
+        }, {
+          '$project': {
+            '_id': 0
+          }
+        }
+      ];
+    const cursor = await Categorie.aggregate(agg);
+    return res.status(200).json({
+        cursor
+    })      
 }
