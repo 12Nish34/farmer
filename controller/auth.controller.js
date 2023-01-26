@@ -4,6 +4,7 @@ const AppError = require('../utils/appErrors');
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 const comparePassword = require("../middleware/compare");
+var bcrypt = require("bcryptjs");
 
 const User = db.user;
 const Profile = db.profile;
@@ -30,8 +31,6 @@ const createProfile = async (id,email,name)=>{
 
 //Method for login
 exports.login = async (req,res,next)=>{
-    console.log(req.body.email)
-    console.log(req.body.password)
     const user = await  User.findOne({
         email: req.body.email,
     });
@@ -42,21 +41,24 @@ exports.login = async (req,res,next)=>{
         })
     }
 
-    if(user){
-        console.log(user.password)
-        if(!comparePassword(user.password,req.body.password)){
-            return res.status(400).json({
-                error:"Wrong password"
-            })
-        }
-    }
+    var passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+
+    if (!passwordIsValid) {
+        return res.status(401).send({
+          accessToken: null,
+          message: "Invalid Password!"
+        });
+      }
 
     console.log(user)
 
     const profile = await createProfile(user._id,user.email,user.name)
 
     var token = jwt.sign({ id: user._id }, config.secret, {
-        expiresIn: 86400 // 24 hours
+        expiresIn: 130000 
       });
 
     res.status(200).send({
@@ -87,7 +89,7 @@ exports.signup = async (req,res,next)=>{
     await User.create({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: bcrypt.hashSync(req.body.password, 12),
       });
     const user_res = await User.findOne({
         email: req.body.email,
@@ -95,7 +97,6 @@ exports.signup = async (req,res,next)=>{
     return res.status(200).json({
         status:'success',
         data: 'Verified!!',
-        user: user_res,
     })
 }
 

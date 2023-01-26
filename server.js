@@ -10,18 +10,20 @@ const { DB } = require("./config/db.config");
 const app = express();
 
 const corsoption = {
-    origin: "http://192.168.0.110:19000",
+    origin: "http:localhost:8080",
 }
 
 app.use(cors(corsoption))
 app.use(express.json())
 app.use(urlencoded({extended:true}))
 
+const mongodb_local = 'mongodb://127.0.0.1:27017/farmer'
+const mongodb_deployed = 'mongodb+srv://user123:FmbpALd2NTtOeJZF@cluster0.uw3dh6h.mongodb.net/?retryWrites=true&w=majority'
 
 mongoose
-  .connect(`mongodb+srv://farmerApp:0lxK9CUpqN2iiNDz@cluster0.x6r2lng.mongodb.net/?retryWrites=true&w=majority`, {
+  .connect(mongodb_deployed, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Successfully connect to MongoDB.");
@@ -33,6 +35,9 @@ mongoose
 
 
 require('./routes/auth.routes')(app);
+require('./routes/categorie/cat.routes')(app);
+require('./routes/categorie/sub.routes')(app);
+require('./routes/categorie/expense.routes')(app);
 
 
 app.get("/",(req,res)=>{
