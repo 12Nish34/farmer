@@ -88,17 +88,15 @@ exports.signup = async (req,res,next)=>{
             message:"User already exits!!",
          });
     }
-    await User.create({
+    const user_response = await User.create({
         name: req.body.name,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 12),
       });
-    const user_res = await User.findOne({
-        email: req.body.email,
-    })
     return res.status(200).json({
         status:'success',
         data: 'Verified!!',
+        user:user_response
     })
 }
 
