@@ -28,12 +28,10 @@ exports.create=async(req,res,next)=>{
         })
     }
     console.log()
-    await Categorie.create({
+    const categorie = await Categorie.create({
         name:req.body.name,
         user_id:user._id,
     })
-    const categorie = await Categorie.find({user_id:user._id})
-    console.log(categorie)
     return res.status(200).json({
         message:"Created",
         category:categorie,
