@@ -110,6 +110,7 @@ exports.showMainGraph = async(req,res,next)=>{
     console.log("User id from get request",user_id);
     const user = await User.findOne().where("_id").equals(user_id)
     console.log(user)
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     const agg = [
       {
           '$lookup': {
@@ -147,8 +148,14 @@ exports.showMainGraph = async(req,res,next)=>{
       }
   ]
   const response = await Categorie.aggregate(agg);
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+  const result = []
+  response.map((item)=>{
+    result.push({
+      x:months[item['x']-1],
+      y:item['y']
+    })
+  })
   return res.status(200).json({
-    response
+    result
   })
 }
