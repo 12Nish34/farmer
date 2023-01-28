@@ -133,16 +133,16 @@ exports.showMainGraph = async(req,res,next)=>{
           '$group': {
               '_id': {
                   '$month': '$main.createdAt'
-              }, 
-              'total': {
+              },
+              'y': {
                   '$sum': '$main.amount'
               }
           }
       },{
         '$project':{
           '_id':0,
-          'Month':'$_id',
-          'total':1,
+          'x':'$_id',
+          'y':1,
         }
       }
   ]
