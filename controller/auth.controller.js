@@ -84,7 +84,9 @@ exports.signup = async (req,res,next)=>{
         email: req.body.email,
     })
     if(user){
-         return next(new AppError('Email already taken', 400));
+         return res.status(401).send({
+            message:"User already exits!!",
+         });
     }
     await User.create({
         name: req.body.name,
