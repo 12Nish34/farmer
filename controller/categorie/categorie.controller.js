@@ -52,7 +52,7 @@ exports.show = async(req,res,next)=>{
             'from': 'subs', 
             'localField': '_id', 
             'foreignField': 'cat_id', 
-            'as': 'result'
+            'as': 'subCategory'
           }
         }
       ];
@@ -103,4 +103,52 @@ exports.showGraph = async(req,res,next)=>{
     return res.status(200).json({
         graph:cursor
     })      
+}
+
+exports.showMainGraph = async(req,res,next)=>{
+    const user_id = req.userId
+    console.log("User id from get request",user_id);
+    const user = await User.findOne().where("_id").equals(user_id)
+    console.log(user)
+    const agg = [
+      {
+          '$lookup': {
+              'from': 'subs', 
+              'localField': '_id', 
+              'foreignField': 'cat_id', 
+              'as': 'result'
+          }
+      }, {
+          '$lookup': {
+              'from': 'expenses', 
+              'localField': 'result._id', 
+              'foreignField': 'sub_id', 
+              'as': 'main'
+          }
+      }, {
+          '$unwind': {
+              'path': '$main'
+          }
+      }, {
+          '$group': {
+              '_id': {
+                  '$month': '$main.createdAt'
+              }, 
+              'total': {
+                  '$sum': '$main.amount'
+              }
+          }
+      },{
+        '$project':{
+          '_id':0,
+          'Month':'$_id',
+          'total':1,
+        }
+      }
+  ]
+  const response = await Categorie.aggregate(agg);
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+  return res.status(200).json({
+    response
+  })
 }
