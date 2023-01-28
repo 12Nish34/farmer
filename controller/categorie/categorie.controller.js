@@ -47,13 +47,18 @@ exports.show = async(req,res,next)=>{
     console.log(user)
     const category = await Categorie.find({}).where('user_id').equals(user._id)
     const agg = [
+      {
+        '$match': {
+          'user_id': user._id
+        }
+      },
         {
           '$lookup': {
             'from': 'subs', 
             'localField': '_id', 
             'foreignField': 'cat_id', 
             'as': 'subCategory'
-          }
+          },
         }
       ];
     const cursor =await Categorie.aggregate(agg);
@@ -112,6 +117,11 @@ exports.showMainGraph = async(req,res,next)=>{
     console.log(user)
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     const agg = [
+      {
+        '$match': {
+          'user_id': user._id
+        }
+      },
       {
           '$lookup': {
               'from': 'subs', 
