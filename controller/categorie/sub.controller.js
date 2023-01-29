@@ -69,6 +69,9 @@ exports.show = async(req,res,next)=>{
       }, {
         '$group': {
           '_id': '$result.sub_id', 
+          'name': {
+            '$first': '$name'
+          },
           'total': {
             '$sum': '$result.amount'
           }
