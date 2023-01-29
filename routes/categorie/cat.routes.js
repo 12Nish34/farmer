@@ -1,6 +1,5 @@
-const express = require('express')
-
-const {create,show, showGraph, showMainGraph} = require("../../controller/categorie/categorie.controller");
+const express = require('express');
+const {create,show, showGraph, showMainGraph, deleteCat} = require("../../controller/categorie/categorie.controller");
 const authJwt = require('../../middleware/authJwt');
 
 module.exports = function(app){
@@ -17,6 +16,7 @@ module.exports = function(app){
     router.get("/",[authJwt.verifyToken],show);
     router.get("/graph",[authJwt.verifyToken],showGraph);
     router.get("/main",[authJwt.verifyToken],showMainGraph);
+    router.delete("/:id",[authJwt.verifyToken],deleteCat)
 
     app.use('/api/categorie', router)
 }

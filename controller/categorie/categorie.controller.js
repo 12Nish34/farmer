@@ -44,25 +44,30 @@ exports.show = async(req,res,next)=>{
     const user = await User.findOne().where("_id").equals(user_id)
     console.log(user)
     const category = await Categorie.find({}).where('user_id').equals(user._id)
-    const agg = [
-      {
-        '$match': {
-          'user_id': user._id
-        }
-      },
-        {
-          '$lookup': {
-            'from': 'subs', 
-            'localField': '_id', 
-            'foreignField': 'cat_id', 
-            'as': 'subCategory'
-          },
-        }
-      ];
-    const cursor =await Categorie.aggregate(agg);
     return res.status(200).json({
-        result:cursor
+        result:category
     })
+}
+
+exports.deleteCat = async(req,res,next)=>{
+  const cat_id = req.params.id;
+  const user_id = req.userId
+  const user = await User.findOne().where("_id").equals(user_id)
+  if(!user){
+    return res.status(401).send({
+      message:"No such user",
+    })
+  }
+  const category = await Categorie.findOne().where('_id').equals(cat_id);
+  if(!category){
+    return res.status(404).send({
+      message:"No such category exists",
+    })
+  }
+  const response = await Categorie.deleteMany().where('_id').equals(Object(cat_id))
+  return res.status(200).json({
+    response
+  })
 }
 
 exports.showGraph = async(req,res,next)=>{

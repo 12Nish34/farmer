@@ -11,6 +11,10 @@ var categorie = new mongoose.Schema({
     },
 },{ versionKey: false, timestamps: true })
 
+// categorie.pre('deleteMany',async(next)=>{
+//     this.
+// })
+
 const Categorie = mongoose.model('Categorie',categorie);
 
 module.exports = Categorie;
