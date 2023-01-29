@@ -44,13 +44,14 @@ exports.create=async(req,res,next)=>{
 
 exports.show = async(req,res,next)=>{
     const user_token = req.userId;
+    const sub_id = req.params.sub;
     const user = await User.findOne().where('_id').equals(user_token);
     if(!user){
         return res.status(401).send({
             message:"Wrong user or token provided"
         })
     }
-    const response = await Expense.find({});
+    const response = await Expense.find().where('sub_id').equals(sub_id);
     return res.status(200).json({
         response
     })

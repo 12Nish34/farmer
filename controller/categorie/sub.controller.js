@@ -30,6 +30,10 @@ exports.create = async(req,res,next)=>{
         name:req.body.name,
         description:req.body.description,
     })
+    await Expense.create({
+      sub_id:sub._id,
+      amount:0,
+    })
     return res.status(200).json({
         result:sub
     })

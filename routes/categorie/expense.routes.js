@@ -14,7 +14,7 @@ module.exports = function(app){
       });
 
     router.post('/',[authJwt.verifyToken],create)
-    router.get('/',[authJwt.verifyToken],show)
+    router.get('/:sub',[authJwt.verifyToken],show)
     
     app.use('/api/expense',router)
 }

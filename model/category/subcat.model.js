@@ -19,6 +19,7 @@ const subcat = new mongoose.Schema({
     }
 },{versionKey: false,timestamps:true})
 
+
 const Subcat = mongoose.model('Sub',subcat);
 
 module.exports = Subcat;
