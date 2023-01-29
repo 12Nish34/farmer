@@ -51,7 +51,8 @@ exports.show = async(req,res,next)=>{
 
 exports.deleteCat = async(req,res,next)=>{
   const cat_id = req.params.id;
-  const user_id = req.userId
+  const user_id = req.userId;
+  console.log(cat_id)
   const user = await User.findOne().where("_id").equals(user_id)
   if(!user){
     return res.status(401).send({
@@ -64,7 +65,7 @@ exports.deleteCat = async(req,res,next)=>{
       message:"No such category exists",
     })
   }
-  const response = await Categorie.deleteMany().where('_id').equals(Object(cat_id))
+  const response = await Categorie.deleteOne().where('_id').equals(cat_id)
   return res.status(200).json({
     response
   })

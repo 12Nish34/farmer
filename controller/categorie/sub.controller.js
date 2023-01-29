@@ -38,8 +38,6 @@ exports.create = async(req,res,next)=>{
 exports.show = async(req,res,next)=>{
     const user_id = req.userId;
     const user = await User.findOne().where("_id").equals(user_id)
-    console.log(user)
-    //Check whether the categorie exists or not
     if(!user){
         return res.status(401).send({
             message:"No such user",
@@ -47,47 +45,39 @@ exports.show = async(req,res,next)=>{
     }
     const cat_id = req.body.id;
     const categorie = await Categorie.findOne().where("_id").equals(cat_id);
-    console.log(categorie)
+    if(!categorie){
+      res.status(403).send({
+        message:"No such categorie"
+      })
+    }
     const agg = [
-        {
-          '$lookup': {
-            'from': 'expenses', 
-            'localField': '_id', 
-            'foreignField': 'sub_id', 
-            'as': 'result'
+      {
+        '$match': {
+          'cat_id': categorie._id
+        }
+      }, {
+        '$lookup': {
+          'from': 'expenses', 
+          'localField': '_id', 
+          'foreignField': 'sub_id', 
+          'as': 'result'
+        }
+      }, {
+        '$unwind': {
+          'path': '$result'
+        }
+      }, {
+        '$group': {
+          '_id': '$result.sub_id', 
+          'total': {
+            '$sum': '$result.amount'
           }
         }
-      ];
-    const cursor = await Subcategorie.aggregate(agg);
-    const agg1= [
-        {
-          '$lookup': {
-            'from': 'expenses', 
-            'localField': '_id', 
-            'foreignField': 'sub_id', 
-            'as': 'result'
-          }
-        }, {
-          '$unwind': {
-            'path': '$result'
-          }
-        }, {
-          '$group': {
-            '_id': null, 
-            'total': {
-              '$sum': '$result.amount'
-            }
-          }
-        }, {
-          '$project': {
-            '_id': 0
-          }
-        }
-      ];
-    const total = await Subcategorie.aggregate(agg1)
+      }
+    ]
+    const response = await Subcategorie.aggregate(agg)
     return res.status(200).json({
-        results:cursor,
-        total
+        response
     })
 }
 
