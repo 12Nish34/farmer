@@ -37,13 +37,14 @@ exports.create = async(req,res,next)=>{
 
 exports.show = async(req,res,next)=>{
     const user_id = req.userId;
+    console.log(user_id)
     const user = await User.findOne().where("_id").equals(user_id)
     if(!user){
         return res.status(401).send({
             message:"No such user",
         })
     }
-    const cat_id = req.body.id;
+    const cat_id = req.params.sub;
     const categorie = await Categorie.findOne().where("_id").equals(cat_id);
     if(!categorie){
       res.status(403).send({
