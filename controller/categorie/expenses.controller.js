@@ -52,8 +52,19 @@ exports.show = async(req,res,next)=>{
         })
     }
     const response = await Expense.find().where('sub_id').equals(sub_id);
+    const data = []
+    response.map((item)=>{
+        if(item.amount!=0){
+            const result = {
+                _id: item._id,
+                name: item.name,
+                amount:item.amount
+            }
+            data.push(result)
+        }
+    })
     return res.status(200).json({
-        response
+        response:data
     })
 }
 
