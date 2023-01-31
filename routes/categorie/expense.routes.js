@@ -15,7 +15,7 @@ module.exports = function(app){
 
     router.post('/',[authJwt.verifyToken],create)
     router.get('/:sub',[authJwt.verifyToken],show)
-    router.delete('/id',[authJwt.verifyToken],deleteExpeses)
+    router.delete('/:id',[authJwt.verifyToken],deleteExpeses)
     
     app.use('/api/expense',router)
 }
