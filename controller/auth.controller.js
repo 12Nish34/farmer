@@ -42,7 +42,7 @@ exports.login = async (req,res,next)=>{
     }
 
     var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
+        bcrypt.hashSync(req.body.password, 12),
         user.password
       );
 

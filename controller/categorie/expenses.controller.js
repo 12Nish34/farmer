@@ -68,3 +68,18 @@ exports.show = async(req,res,next)=>{
     })
 }
 
+exports.deleteExpeses = async(req,res,next)=>{
+    const user_token = req.userId;
+    const exp_id = req.params.id;
+    const user = await User.findOne().where('_id').equals(user_token);
+    if(!user){
+        return res.status(401).send({
+            message:"Wrong user or token provided"
+        })
+    }
+    const response = await Expense.deleteOne().where('_id').equals(exp_id);
+    return res.status(200).json({
+        response
+    })
+}
+
