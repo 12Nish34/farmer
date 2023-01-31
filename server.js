@@ -38,6 +38,7 @@ require('./routes/auth.routes')(app);
 require('./routes/categorie/cat.routes')(app);
 require('./routes/categorie/sub.routes')(app);
 require('./routes/categorie/expense.routes')(app);
+require('./routes/profile.routes')(app);
 
 
 app.get("/",(req,res)=>{
