@@ -173,3 +173,119 @@ exports.showMainGraph = async(req,res,next)=>{
     result
   })
 }
+
+exports.generateExcel = async(req,res,next)=>{
+  //name, category, subcategories, expenses, date
+  const user_id = req.userId
+  console.log("User id from get request",user_id);
+  const user = await User.findOne().where("_id").equals(user_id);
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    const agg = [
+      {
+        '$match': {
+          'user_id': user._id
+        }
+      },
+      {
+          '$lookup': {
+              'from': 'subs', 
+              'localField': '_id', 
+              'foreignField': 'cat_id', 
+              'as': 'result'
+          }
+      }, {
+          '$lookup': {
+              'from': 'expenses', 
+              'localField': 'result._id', 
+              'foreignField': 'sub_id', 
+              'as': 'main'
+          }
+      }, {
+          '$unwind': {
+              'path': '$main'
+          }
+      }, {
+          '$group': {
+              '_id':'$result._id',
+              'cat':{
+                  '$first':'$categories.name'
+              },
+              'sub':{
+                  '$first':'$result.name'
+              },
+              'total': {
+                  '$sum': '$main.amount'
+              }
+          }
+      },{
+        '$project':{
+          '_id':0,
+          'cat':1,
+          'sub':1,
+          'total':1,
+        }
+      }
+  ]
+  const response = await Categorie.aggregate(agg);
+  const result = []
+  response.map((item)=>{
+    result.push({
+      month:months[item['month']-1],
+      total:item['total'],
+      sub_category:item['sub']
+    })
+  })
+  return res.status(200).json({
+    result,
+  })
+}
+
+exports.weekGraph = async(req,res,next)=>{
+  const user_id = req.userId
+  console.log("User id from get request",user_id);
+  const user = await User.findOne().where("_id").equals(user_id);
+  const agg = [
+    {
+      '$match': {
+        'user_id': user._id
+      }
+    }, {
+      '$lookup': {
+        'from': 'subs', 
+        'localField': '_id', 
+        'foreignField': 'cat_id', 
+        'as': 'result'
+      }
+    }, {
+      '$lookup': {
+        'from': 'expenses', 
+        'localField': 'result._id', 
+        'foreignField': 'sub_id', 
+        'as': 'main'
+      }
+    }, {
+      '$unwind': {
+        'path': '$main'
+      }
+    }, {
+      '$group': {
+        '_id': {
+          '$week': '$main.createdAt'
+        }, 
+        'total': {
+          '$sum': '$main.amount'
+        }
+      }
+    }, {
+      '$project': {
+        '_id': 0, 
+        'x': '$_id', 
+        'y': '$total'
+      }
+    }
+  ]
+  const response = await Categorie.aggregate(agg);
+  return res.status(200).json({
+    response
+  })
+}
