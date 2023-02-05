@@ -33,7 +33,7 @@ const createProfile = async (id,email,name)=>{
 exports.login = async (req,res,next)=>{
     const user = await  User.findOne({
         email: req.body.email,
-    });
+    })
     if(!user){
         console.log("No such users here")
         return res.status(400).json({
@@ -41,7 +41,7 @@ exports.login = async (req,res,next)=>{
         })
     }
 
-    var passwordIsValid = bcrypt.compareSync(
+    var passwordIsValid =bcrypt.compareSync(
         req.body.password,
         user.password
       );

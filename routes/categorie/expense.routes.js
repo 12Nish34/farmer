@@ -1,6 +1,6 @@
 const express = require('express');
 
-const {create, show, deleteExpeses} = require('../../controller/categorie/expenses.controller');
+const {create, show, deleteExpeses, pdfGenerate} = require('../../controller/categorie/expenses.controller');
 const authJwt = require('../../middleware/authJwt');
 
 module.exports = function(app){
@@ -14,8 +14,9 @@ module.exports = function(app){
       });
 
     router.post('/',[authJwt.verifyToken],create)
+    router.get("/pdf",[authJwt.verifyToken],pdfGenerate)
     router.get('/:sub',[authJwt.verifyToken],show)
     router.delete('/:id',[authJwt.verifyToken],deleteExpeses)
-    
+
     app.use('/api/expense',router)
 }

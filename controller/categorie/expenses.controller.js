@@ -83,3 +83,54 @@ exports.deleteExpeses = async(req,res,next)=>{
     })
 }
 
+exports.pdfGenerate = async(req,res,next)=>{
+    const user_token = req.userId;
+    const user = await User.findOne().where('_id').equals(user_token);
+    if(!user){
+        return res.status(401).send({
+            message:"Wrong user or token provided"
+        })
+    }
+    const agg = [
+        {
+          '$group': {
+            '_id': '$sub_id', 
+            'total': {
+              '$sum': '$amount'
+            }
+          }
+        }, {
+          '$lookup': {
+            'from': 'subs', 
+            'localField': '_id', 
+            'foreignField': '_id', 
+            'as': 'result'
+          }
+        }, {
+          '$unwind': {
+            'path': '$result', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$lookup': {
+            'from': 'categories', 
+            'localField': 'result.cat_id', 
+            'foreignField': '_id', 
+            'as': 'main'
+          }
+        }, {
+          '$unwind': {
+            'path': '$main', 
+            'preserveNullAndEmptyArrays': true
+          }
+        }, {
+          '$match': {
+            'main.user_id': user._id
+          }
+        }
+      ]
+    const response = await Expense.aggregate(agg);
+    return res.status(201).json({
+        response
+    })
+}
