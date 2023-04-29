@@ -73,6 +73,7 @@ exports.deleteCat = async(req,res,next)=>{
 
 exports.showGraph = async(req,res,next)=>{
     const user_id = req.userId
+    let year = Number(req.query.year);
     console.log("User id from get request",user_id);
     const user = await User.findOne().where("_id").equals(user_id)
     console.log(user)
@@ -116,6 +117,8 @@ exports.showGraph = async(req,res,next)=>{
 
 exports.showMainGraph = async(req,res,next)=>{
     const user_id = req.userId
+    let year = 2023;
+    year = Number(req.query?.year);
     console.log("User id from get request",user_id);
     const user = await User.findOne().where("_id").equals(user_id)
     console.log(user)
@@ -123,7 +126,8 @@ exports.showMainGraph = async(req,res,next)=>{
     const agg = [
       {
         '$match': {
-          'user_id': user._id
+          'user_id': user._id,
+          '$expr': { '$eq': [{ '$year': '$createdAt' }, year] }
         }
       },
       {
@@ -242,13 +246,22 @@ exports.generateExcel = async(req,res,next)=>{
 
 exports.weekGraph = async(req,res,next)=>{
   const user_id = req.userId
+  let year = 2023;
+  let month = 1;
+  year = Number(req.query?.year);
+  month = Number(req.query?.month);
   console.log("User id from get request",user_id);
   const user = await User.findOne().where("_id").equals(user_id);
+  console.log(user);
   const agg = [
     {
       '$match': {
-        'user_id': user._id
-      }
+          'user_id':user._id,
+          '$and': [
+            { '$expr': { '$eq': [{ '$year': '$createdAt' }, year] } }, // replace 2023 with the desired year
+            { '$expr': { '$eq': [{ '$month': '$createdAt' }, month] } } // replace 4 with the desired month number
+          ]
+    }
     }, {
       '$lookup': {
         'from': 'subs', 
@@ -269,9 +282,7 @@ exports.weekGraph = async(req,res,next)=>{
       }
     }, {
       '$group': {
-        '_id': {
-          '$week': '$main.createdAt'
-        }, 
+        '_id': { '$ceil': { '$divide': [ { '$dayOfMonth': "$createdAt" }, 7 ] } }, 
         'total': {
           '$sum': '$main.amount'
         }
