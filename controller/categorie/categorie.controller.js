@@ -257,10 +257,6 @@ exports.weekGraph = async(req,res,next)=>{
     {
       '$match': {
           'user_id':user._id,
-          'createdAt': {
-            '$gte': new Date(Date.UTC(year, month - 1, 1)),
-            '$lt': new Date(Date.UTC(year, month, 1))
-          }
     }
     }, {
       '$lookup': {
@@ -281,6 +277,14 @@ exports.weekGraph = async(req,res,next)=>{
         'path': '$main'
       }
     },{
+      '$match':{
+        'main.createdAt': {
+          '$gte': new Date(Date.UTC(year, month - 1, 1)),
+          '$lt': new Date(Date.UTC(year, month, 1))
+        }
+      }
+    },
+    {
       '$sort': {
         'createdAt': 1
       }
