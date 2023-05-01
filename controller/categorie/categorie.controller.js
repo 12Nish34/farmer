@@ -280,7 +280,11 @@ exports.weekGraph = async(req,res,next)=>{
       '$unwind': {
         'path': '$main'
       }
-    }, {
+    },{
+      '$sort': {
+        'createdAt': 1
+      }
+    },{
       '$group': {
         '_id': { '$ceil': { '$divide': [ { '$dayOfMonth': "$createdAt" }, 7 ] } }, 
         'total': {
