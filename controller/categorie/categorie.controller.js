@@ -276,34 +276,12 @@ exports.weekGraph = async(req,res,next)=>{
       '$unwind': {
         'path': '$main'
       }
-    }, {
+    },{
       '$match': {
-        '$and': [
-          {
-            '$expr': {
-              '$eq': [
-                {
-                  '$year': '$main.createdAt'
-                },
-                year
-              ]
-            }
-          }, {
-            '$expr': {
-              '$eq': [
-                {
-                  '$month': '$main.createdAt'
-                },
-                month
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      '$sort': {
-        'createdAt': 1
+        'main.createdAt': {
+          '$gte': new Date(Date.UTC(year, month - 1, 1)),
+          '$lt': new Date(Date.UTC(year, month, 1))
+        }
       }
     },{
       '$group': {
