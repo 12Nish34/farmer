@@ -257,10 +257,10 @@ exports.weekGraph = async(req,res,next)=>{
     {
       '$match': {
           'user_id':user._id,
-          '$and': [
-            { '$expr': { '$eq': [{ '$year': '$createdAt' }, year] } }, // replace 2023 with the desired year
-            { '$expr': { '$eq': [{ '$month': '$createdAt' }, month] } } // replace 4 with the desired month number
-          ]
+          'createdAt': {
+            '$gte': new Date(Date.UTC(year, month - 1, 1)),
+            '$lt': new Date(Date.UTC(year, month, 1))
+          }
     }
     }, {
       '$lookup': {
