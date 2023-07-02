@@ -71,6 +71,7 @@ exports.create = async(req,res,next)=>{
 
 exports.createReport = async(req,res,next)=>{
   const user_id = req.userId;
+  console.log(user_id);
   const user = await User.findOne().where("_id").equals(user_id)
   console.log(user)
   if(!user){

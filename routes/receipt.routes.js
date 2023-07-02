@@ -26,7 +26,7 @@ module.exports = function(app){
         next();
       });
     router.post("/uploadImage",upload.single("myFile"),create);
-    router.post("/uploadReport",createReport);
+    router.post("/uploadReport",[authJwt.verifyToken],createReport);
 
     app.use('/api/receipt', router)
 }
