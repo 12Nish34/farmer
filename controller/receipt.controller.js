@@ -4,7 +4,8 @@ const multer = require('multer');
 const s3Multer = require('multer-s3')
 const B2 = require('backblaze-b2');
 const fs = require('fs')
-const process = require('process')
+const process = require('process');
+const Receipt = require('../model/receipt.model');
 
 const receipt = db.receipt;
 const User = db.user;
@@ -87,5 +88,21 @@ exports.createReport = async(req,res,next)=>{
   })
   return res.status(200).json({
     message:"Added successfully!!!!!"
+  })
+}
+
+exports.getReport = async(req,res,next)=>{
+  const user_id = req.userId;
+  console.log(user_id);
+  const user = await User.findOne().where("_id").equals(user_id)
+  console.log(user)
+  if(!user){
+    return res.status(404).send({
+      message:"No such user!!!",
+    })
+  }
+  const response = await Receipt.find({}).where('user_id').equals(user._id);
+  return res.status(200).json({
+    response
   })
 }
