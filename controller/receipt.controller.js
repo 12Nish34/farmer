@@ -7,6 +7,7 @@ const fs = require('fs')
 const process = require('process')
 
 const receipt = db.receipt;
+const User = db.user;
 
 let applicationKeyId = process.env.APPLICATION_KEY_ID
 let applicationKey = process.env.APPLICATION_KEY
