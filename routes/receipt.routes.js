@@ -28,7 +28,7 @@ module.exports = function(app){
     router.post("/uploadImage",upload.single("myFile"),create);
     router.post("/uploadReport",[authJwt.verifyToken],createReport);
     router.get("/",[authJwt.verifyToken],getReport)
-    router.delete("/",[authJwt.verifyToken],deleteReport)
+    router.delete("/:id",[authJwt.verifyToken],deleteReport)
 
     app.use('/api/receipt', router)
 }

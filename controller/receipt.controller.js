@@ -118,7 +118,15 @@ exports.deleteReport = async(req,res,next)=>{
       message:"No such user!!!"
     })
   }
-  const response = await Receipt.deleteOne().where('_id').equals(report_id);
+  console.log(report_id);
+  const report = await Receipt.findOne().where('_id').equals(report_id);
+  if(!report){
+    return res.status(404).send({
+      message:"No such receipt"
+    })
+  }
+  const response = await Receipt.deleteOne().where('_id').equals(report._id);
+  console.log(response);
   return res.status(200).json({
     message:"Deleted successfully!!!"
   })
