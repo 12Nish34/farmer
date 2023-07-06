@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authJwt = require('../middleware/authJwt');
-const {create, createReport, getReport} = require('../controller/receipt.controller')
+const {create, createReport, getReport, deleteReport} = require('../controller/receipt.controller')
 const multer = require('multer');
 
 const storageEngine = multer.diskStorage({
@@ -28,6 +28,7 @@ module.exports = function(app){
     router.post("/uploadImage",upload.single("myFile"),create);
     router.post("/uploadReport",[authJwt.verifyToken],createReport);
     router.get("/",[authJwt.verifyToken],getReport)
+    router.delete("/",[authJwt.verifyToken],deleteReport)
 
     app.use('/api/receipt', router)
 }
