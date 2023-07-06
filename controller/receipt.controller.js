@@ -108,6 +108,7 @@ exports.getReport = async(req,res,next)=>{
 }
 
 exports.deleteReport = async(req,res,next)=>{
+  const report_id = req.params.id;
   const user_id = req.userId;
   console.log(user_id);
   const user = await User.findOne().where("_id").equals(user_id);
@@ -117,7 +118,7 @@ exports.deleteReport = async(req,res,next)=>{
       message:"No such user!!!"
     })
   }
-  const response = await Receipt.deleteOne().where('user_id').equals(user._id);
+  const response = await Receipt.deleteOne().where('_id').equals(report_id);
   return res.status(200).json({
     message:"Deleted successfully!!!"
   })
