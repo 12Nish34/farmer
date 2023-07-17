@@ -1,13 +1,11 @@
 const express = require("express")
 const cors = require("cors");
-const apiCache = require("apicache");
 const { urlencoded } = require("express");
 const { db } = require("./model/index");
 const mongoose = require('mongoose');
 const dbConfig = require('./config/db.config');
 const { DB } = require("./config/db.config");
 
-let cache = apiCache.middleware;
 
 const app = express();
 swaggerJsdoc = require("swagger-jsdoc"),
@@ -18,8 +16,6 @@ const corsoption = {
 }
 
 require('dotenv').config()
-//caching all routes for 5 minutes
-app.use(cache('10 minutes'))
 app.use(cors())
 app.use(express.json())
 app.use(urlencoded({extended:true}))
