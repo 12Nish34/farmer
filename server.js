@@ -5,6 +5,7 @@ const { db } = require("./model/index");
 const mongoose = require('mongoose');
 const dbConfig = require('./config/db.config');
 const { DB } = require("./config/db.config");
+const cron = require('node-cron');
 
 
 const app = express();
@@ -45,6 +46,9 @@ require('./routes/categorie/expense.routes')(app);
 require('./routes/profile.routes')(app);
 require('./routes/receipt.routes')(app);
 
+cron.schedule('* * * * *',()=>{
+  console.log("Comes every min");
+})
 
 app.get("/",(req,res)=>{
     res.json({"message":"This is a new application for all with new updates"})
