@@ -58,7 +58,8 @@ exports.show = async(req,res,next)=>{
             const result = {
                 _id: item._id,
                 name: item.name,
-                amount:item.amount
+                amount:item.amount,
+                createdAt:item.createdAt
             }
             data.push(result)
         }

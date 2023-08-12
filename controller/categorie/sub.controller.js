@@ -79,7 +79,8 @@ exports.show = async(req,res,next)=>{
           },
           'total': {
             '$sum': '$result.amount'
-          }
+          },
+          'createdAt':{'$first':'$result.createdAt'}
         }
       }
     ]
