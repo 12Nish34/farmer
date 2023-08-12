@@ -19,7 +19,7 @@ app.use(urlencoded({extended:true}))
 
 
 mongoose
-  .connect(`mongodb+srv://farmerApp:0lxK9CUpqN2iiNDz@cluster0.x6r2lng.mongodb.net/?retryWrites=true&w=majority`, {
+  .connect(``, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
