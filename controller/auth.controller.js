@@ -2,7 +2,6 @@ const db = require("../model/index")
 const { validationResult } = require('express-validator');
 const AppError = require('../utils/appErrors');
 const jwt = require('jsonwebtoken');
-const config = require('../config/auth.config');
 const comparePassword = require("../middleware/compare");
 var bcrypt = require("bcryptjs");
 
@@ -57,7 +56,7 @@ exports.login = async (req,res,next)=>{
 
     const profile = await createProfile(user._id,user.email,user.name)
 
-    var token = jwt.sign({ id: user._id }, config.secret, {
+    var token = jwt.sign({ id: user._id },process.env.SECRET, {
         expiresIn: 130000 
       });
 
