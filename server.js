@@ -25,6 +25,8 @@ app.use(urlencoded({extended:true}))
 const mongodb_local = 'mongodb://127.0.0.1:27017/farmer'
 const mongodb_deployed = process.env.MONGODB_URL
 
+console.log(mongodb_deployed);
+
 mongoose
   .connect(mongodb_deployed, {
     useNewUrlParser: true,
